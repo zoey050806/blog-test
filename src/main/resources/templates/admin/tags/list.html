@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <title>Manage Tags</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Tags</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                <i class="bi bi-plus-lg"></i> New Tag
+            </button>
+        </div>
+
+        <!-- Tags Table -->
+        <div class="card" th:if="${tags != null && !tags.isEmpty()}">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Posts</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tag : ${tags}">
+                            <td><span class="badge bg-info" th:text="${tag.name}">tag</span></td>
+                            <td><code th:text="${tag.slug}">slug</code></td>
+                            <td><span class="badge bg-secondary" th:text="${tag.posts.size()}">0</span></td>
+                            <td><small th:text="${#temporals.format(tag.createdAt, 'yyyy-MM-dd')}">2024</small></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            onclick="editTag(this)"
+                                            th:attr="data-id=${tag.id},data-name=${tag.name}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <form th:action="@{/admin/tags/{id}/delete(id=${tag.id})}" method="post" class="d-inline"
+                                          onsubmit="return confirm('Delete this tag? It will be removed from all posts.');">
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- No tags -->
+        <div th:unless="${tags != null && !tags.isEmpty()}" class="text-center py-5">
+            <p class="text-muted">No tags yet.</p>
+        </div>
+
+        <!-- Create Modal -->
+        <div class="modal fade" id="createModal" tabindex="-1">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <form th:action="@{/admin/tags}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">New Tag</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Tag Name</label>
+                                <input type="text" class="form-control" name="name" required
+                                       placeholder="e.g., Java, Spring">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <form id="editForm" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Tag</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Tag Name</label>
+                                <input type="text" class="form-control" name="name" id="editName" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

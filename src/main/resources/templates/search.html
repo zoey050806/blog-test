@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>Search</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-2">Search Results</h1>
+        <p class="text-muted mb-4">
+            Found <strong th:text="${posts != null ? posts.totalElements : 0}">0</strong> result(s)
+            for "<span th:text="${keyword}">keyword</span>"
+        </p>
+
+        <!-- Search Again -->
+        <form th:action="@{/search}" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="search" name="q" class="form-control" th:value="${keyword}"
+                       placeholder="Search posts..." required>
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <!-- No Results -->
+        <div th:if="${posts == null || posts.content.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-search" style="font-size: 3rem; color: #ccc;"></i>
+            <h4 class="text-muted mt-3">No results found</h4>
+            <p class="text-muted">Try different keywords or browse the categories.</p>
+        </div>
+
+        <!-- Results -->
+        <article th:each="post : ${posts.content}" class="card mb-4 post-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <span th:if="${post.category}" class="badge bg-primary me-2" th:text="${post.category.name}">Cat</span>
+                    <small class="text-muted">
+                        <i class="bi bi-calendar3"></i>
+                        <span th:text="${#temporals.format(post.publishedAt != null ? post.publishedAt : post.createdAt, 'yyyy-MM-dd')}">2024-01-01</span>
+                    </small>
+                </div>
+                <h2 class="card-title h5">
+                    <a th:href="@{/posts/{slug}(slug=${post.slug})}"
+                       class="text-decoration-none text-dark"
+                       th:text="${post.title}">Post Title</a>
+                </h2>
+                <p class="card-text text-muted" th:text="${post.summary}">Summary...</p>
+                <div class="d-flex flex-wrap gap-1">
+                    <span th:each="tag : ${post.tags}" class="badge bg-secondary" th:text="${tag.name}">tag</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Pagination -->
+        <div th:with="currentPath='/search'">
+            <div th:replace="~{fragments/pagination :: pagination(${posts})}"></div>
+        </div>
+    </div>
+</body>
+</html>

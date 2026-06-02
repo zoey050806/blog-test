@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4">Dashboard</h1>
+
+        <div class="row g-3">
+            <!-- Posts Card -->
+            <div class="col-md-4">
+                <div class="card text-bg-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total Posts</h6>
+                                <h2 class="mb-0" th:text="${totalPosts}">0</h2>
+                            </div>
+                            <i class="bi bi-file-text" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        </div>
+                        <div class="mt-2 small">
+                            <span class="me-2"><i class="bi bi-check-circle"></i> Published: <span th:text="${publishedPosts}">0</span></span>
+                            <span><i class="bi bi-pencil"></i> Draft: <span th:text="${draftPosts}">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Card -->
+            <div class="col-md-4">
+                <div class="card text-bg-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Comments</h6>
+                                <h2 class="mb-0" th:text="${totalComments}">0</h2>
+                            </div>
+                            <i class="bi bi-chat-dots" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        </div>
+                        <div class="mt-2 small">
+                            <span th:if="${pendingComments > 0}" class="badge bg-danger">
+                                <span th:text="${pendingComments}">0</span> pending
+                            </span>
+                            <span th:unless="${pendingComments > 0}" class="text-muted">All clear!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Card -->
+            <div class="col-md-4">
+                <div class="card text-bg-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Categories</h6>
+                                <h2 class="mb-0" th:text="${totalCategories}">0</h2>
+                            </div>
+                            <i class="bi bi-folder" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        </div>
+                        <div class="mt-2 small">
+                            <span th:text="${totalTags}">0</span> tags total
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:href="@{/admin/posts/new}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg"></i> New Post
+                            </a>
+                            <a th:href="@{/admin/posts}" class="btn btn-outline-primary">
+                                <i class="bi bi-file-text"></i> Manage Posts
+                            </a>
+                            <a th:href="@{/admin/comments}" class="btn btn-outline-warning">
+                                <i class="bi bi-chat-dots"></i> Moderate Comments
+                                <span th:if="${pendingComments > 0}"
+                                      class="badge bg-danger ms-1" th:text="${pendingComments}">0</span>
+                            </a>
+                            <a th:href="@{/admin/categories}" class="btn btn-outline-success">
+                                <i class="bi bi-folder"></i> Categories
+                            </a>
+                            <a th:href="@{/admin/tags}" class="btn btn-outline-info">
+                                <i class="bi bi-tags"></i> Tags
+                            </a>
+                            <a th:href="@{/admin/about}" class="btn btn-outline-secondary">
+                                <i class="bi bi-person"></i> Edit About
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

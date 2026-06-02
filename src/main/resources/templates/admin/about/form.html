@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <title>Edit About Page</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4">Edit About Page</h1>
+
+        <!-- Validation Errors -->
+        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+            <ul class="mb-0">
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Error</li>
+            </ul>
+        </div>
+
+        <form th:action="@{/admin/about}" method="post">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card mb-3">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">Content (Markdown)</h6>
+                        </div>
+                        <div class="card-body">
+                            <textarea class="form-control" id="content" name="content" rows="20"
+                                      th:field="*{aboutForm.content}" placeholder="Write about yourself in Markdown..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-header bg-white"><h6 class="mb-0">Profile Links</h6></div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Avatar URL</label>
+                                <input type="url" class="form-control" name="avatarUrl"
+                                       th:field="*{aboutForm.avatarUrl}" placeholder="https://...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">GitHub URL</label>
+                                <input type="url" class="form-control" name="githubUrl"
+                                       th:field="*{aboutForm.githubUrl}" placeholder="https://github.com/...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter URL</label>
+                                <input type="url" class="form-control" name="twitterUrl"
+                                       th:field="*{aboutForm.twitterUrl}" placeholder="https://twitter.com/...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Site Description</label>
+                                <textarea class="form-control" name="siteDescription" rows="3"
+                                          th:field="*{aboutForm.siteDescription}" maxlength="500"
+                                          placeholder="A short description of your blog"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header bg-white"><h6 class="mb-0">Preview</h6></div>
+                        <div class="card-body">
+                            <p class="text-muted">Last updated:
+                                <span th:text="${about.updatedAt != null ? #temporals.format(about.updatedAt, 'yyyy-MM-dd HH:mm') : 'Never'}">Never</span>
+                            </p>
+                            <a th:href="@{/about}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye"></i> View About Page
+                            </a>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-check-lg"></i> Save About Page
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

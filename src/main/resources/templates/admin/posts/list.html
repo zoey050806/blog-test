@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <title>Manage Posts</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Posts</h1>
+            <a th:href="@{/admin/posts/new}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> New Post
+            </a>
+        </div>
+
+        <!-- Posts Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Tags</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="post : ${posts.content}">
+                            <td>
+                                <a th:href="@{/posts/{slug}(slug=${post.slug})}" target="_blank"
+                                   class="text-decoration-none" th:text="${post.title}">Title</a>
+                                <span th:if="${post.isTop}" class="badge bg-danger ms-1">Top</span>
+                            </td>
+                            <td>
+                                <span th:if="${post.category}" class="badge bg-primary"
+                                      th:text="${post.category.name}">Cat</span>
+                                <span th:unless="${post.category}" class="text-muted">—</span>
+                            </td>
+                            <td>
+                                <span th:if="${post.status.name() == 'PUBLISHED'}" class="badge bg-success">Published</span>
+                                <span th:if="${post.status.name() == 'DRAFT'}" class="badge bg-secondary">Draft</span>
+                            </td>
+                            <td>
+                                <span th:each="tag : ${post.tags}" class="badge bg-info me-1"
+                                      th:text="${tag.name}">tag</span>
+                                <span th:if="${post.tags.isEmpty()}" class="text-muted">—</span>
+                            </td>
+                            <td>
+                                <small class="text-muted" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2024-01-01</small>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a th:href="@{/admin/posts/{id}/edit(id=${post.id})}"
+                                       class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/admin/posts/{id}/publish(id=${post.id})}" method="post"
+                                          th:if="${post.status.name() == 'DRAFT'}" class="d-inline">
+                                        <button class="btn btn-sm btn-outline-success" title="Publish">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/admin/posts/{id}/archive(id=${post.id})}" method="post"
+                                          th:if="${post.status.name() == 'PUBLISHED'}" class="d-inline">
+                                        <button class="btn btn-sm btn-outline-warning" title="Archive">
+                                            <i class="bi bi-archive"></i>
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/admin/posts/{id}/delete(id=${post.id})}" method="post"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Delete this post? This cannot be undone.');">
+                                        <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- No Posts -->
+        <div th:if="${posts == null || posts.content.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: #ccc;"></i>
+            <h4 class="text-muted mt-3">No posts yet</h4>
+            <a th:href="@{/admin/posts/new}" class="btn btn-primary mt-2">Create your first post</a>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-3" th:with="currentPath='/admin/posts'">
+            <div th:replace="~{fragments/pagination :: pagination(${posts})}"></div>
+        </div>
+    </div>
+</body>
+</html>

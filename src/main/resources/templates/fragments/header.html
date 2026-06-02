@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <header th:fragment="header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand fw-bold" th:href="@{/}">
+                    <i class="bi bi-journal-text"></i> My Blog
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/about}">About</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" th:action="@{/search}" method="get">
+                        <input class="form-control me-2" type="search" name="q" placeholder="Search posts..."
+                               aria-label="Search" required>
+                        <button class="btn btn-light" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>

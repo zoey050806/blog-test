@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <title th:text="${isEdit} ? 'Edit Post' : 'New Post'">Post Form</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4" th:text="${isEdit} ? 'Edit Post' : 'New Post'">Post Form</h1>
+
+        <!-- Validation Errors -->
+        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+            <ul class="mb-0">
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Error</li>
+            </ul>
+        </div>
+
+        <form th:action="${isEdit} ? @{/admin/posts/{id}(id=${post.id})} : @{/admin/posts}"
+              method="post" enctype="multipart/form-data" id="postForm">
+            <div class="row">
+                <!-- Main Content Column -->
+                <div class="col-lg-8">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <!-- Title -->
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title *</label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                       th:field="*{postForm.title}" required maxlength="200"
+                                       placeholder="Enter post title">
+                            </div>
+
+                            <!-- Slug -->
+                            <div class="mb-3">
+                                <label for="slug" class="form-label">Slug</label>
+                                <input type="text" class="form-control" id="slug" name="slug"
+                                       th:field="*{postForm.slug}" maxlength="200"
+                                       placeholder="Auto-generated from title">
+                                <small class="text-muted">Leave blank to auto-generate from title</small>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="mb-3">
+                                <label for="summary" class="form-label">Summary</label>
+                                <textarea class="form-control" id="summary" name="summary"
+                                          th:field="*{postForm.summary}" rows="2" maxlength="500"
+                                          placeholder="Brief summary (shown in post cards)"></textarea>
+                            </div>
+
+                            <!-- Cover Image -->
+                            <div class="mb-3">
+                                <label class="form-label">Cover Image</label>
+                                <div th:if="${postForm.coverImage != null && !postForm.coverImage.isBlank()}"
+                                     class="mb-2">
+                                    <img th:src="@{/uploads/{filename}(filename=${postForm.coverImage})}"
+                                         class="img-thumbnail" style="max-height: 150px;" alt="Cover preview">
+                                </div>
+                                <input type="file" class="form-control" id="coverFile" accept="image/*">
+                                <input type="hidden" name="coverImage" th:field="*{postForm.coverImage}">
+                                <div id="uploadProgress" class="mt-1 d-none">
+                                    <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%">Uploading...</div></div>
+                                </div>
+                            </div>
+
+                            <!-- Content (Markdown Editor) -->
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Content (Markdown) *</label>
+                                <textarea class="form-control" id="content" name="content"
+                                          th:field="*{postForm.content}" rows="20"
+                                          placeholder="Write your post in Markdown..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Column -->
+                <div class="col-lg-4">
+                    <!-- Publish Settings -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white"><h6 class="mb-0">Publish Settings</h6></div>
+                        <div class="card-body">
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" name="status" th:field="*{postForm.status}">
+                                    <option value="DRAFT">Draft</option>
+                                    <option value="PUBLISHED">Published</option>
+                                </select>
+                            </div>
+
+                            <!-- Pin to Top -->
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="isTop" name="isTop"
+                                       value="true" th:field="*{postForm.isTop}">
+                                <label class="form-check-label" for="isTop">Pin to top</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white"><h6 class="mb-0">Category</h6></div>
+                        <div class="card-body">
+                            <select class="form-select" name="categoryId" th:field="*{postForm.categoryId}">
+                                <option value="">— No Category —</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}"
+                                        th:text="${cat.name}">Category</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white"><h6 class="mb-0">Tags</h6></div>
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-2" th:if="${tags != null && !tags.isEmpty()}">
+                                <div th:each="tag : ${tags}" class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="tagIds"
+                                           th:value="${tag.id}"
+                                           th:id="'tag-' + ${tag.id}"
+                                           th:checked="${postForm.tagIds != null && postForm.tagIds.contains(tag.id)}">
+                                    <label class="form-check-label" th:for="'tag-' + ${tag.id}"
+                                           th:text="${tag.name}">tag</label>
+                                </div>
+                            </div>
+                            <p th:if="${tags == null || tags.isEmpty()}" class="text-muted mb-0">
+                                No tags yet. Create tags in the Tags section.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-check-lg"></i>
+                        <span th:text="${isEdit} ? 'Update Post' : 'Create Post'">Save</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

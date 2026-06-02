@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <footer th:fragment="footer" class="bg-light mt-5 py-4 border-top">
+        <div class="container text-center text-muted">
+            <p class="mb-0">&copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2024</span> My Blog. All rights reserved.</p>
+            <p class="mb-0 small">Powered by Spring Boot &amp; Thymeleaf</p>
+        </div>
+    </footer>
+</body>
+</html>

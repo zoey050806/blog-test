@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>About</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Social Links -->
+        <div th:if="${about.avatarUrl != null || about.githubUrl != null || about.twitterUrl != null}"
+             class="text-center mb-4">
+            <img th:if="${about.avatarUrl != null && !about.avatarUrl.isBlank()}"
+                 th:src="${about.avatarUrl}" class="rounded-circle mb-3"
+                 style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+            <div class="d-flex justify-content-center gap-3">
+                <a th:if="${about.githubUrl != null && !about.githubUrl.isBlank()}"
+                   th:href="${about.githubUrl}" target="_blank" class="btn btn-outline-dark btn-sm">
+                    <i class="bi bi-github"></i> GitHub
+                </a>
+                <a th:if="${about.twitterUrl != null && !about.twitterUrl.isBlank()}"
+                   th:href="${about.twitterUrl}" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-twitter-x"></i> Twitter
+                </a>
+            </div>
+        </div>
+
+        <!-- About Content (Markdown) -->
+        <div class="markdown-body" th:attr="data-markdown=${about.content}"></div>
+
+        <div th:if="${about.siteDescription != null && !about.siteDescription.isBlank()}"
+             class="mt-4 p-3 bg-light rounded">
+            <small class="text-muted" th:text="${about.siteDescription}">Site description</small>
+        </div>
+    </div>
+</body>
+</html>

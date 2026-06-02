@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4">Latest Posts</h1>
+
+        <!-- No Posts Message -->
+        <div th:if="${posts == null || posts.content.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-journal-x" style="font-size: 3rem; color: #ccc;"></i>
+            <h4 class="text-muted mt-3">No posts yet</h4>
+            <p class="text-muted">Check back soon for new content!</p>
+        </div>
+
+        <!-- Post Cards -->
+        <article th:each="post : ${posts.content}" class="card mb-4 post-card">
+            <div class="row g-0" th:if="${post.coverImage != null && !post.coverImage.isBlank()}">
+                <div class="col-md-4">
+                    <img th:src="@{/uploads/{filename}(filename=${post.coverImage})}"
+                         class="img-fluid rounded-start h-100"
+                         style="object-fit: cover;"
+                         th:alt="${post.title}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <span th:if="${post.category}" class="badge bg-primary me-2"
+                                  th:text="${post.category.name}">Category</span>
+                            <span th:if="${post.isTop}" class="badge bg-danger me-2">Pinned</span>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3"></i>
+                                <span th:text="${#temporals.format(post.publishedAt != null ? post.publishedAt : post.createdAt, 'yyyy-MM-dd')}">2024-01-01</span>
+                            </small>
+                            <small class="text-muted ms-3">
+                                <i class="bi bi-eye"></i>
+                                <span th:text="${post.viewCount}">0</span> views
+                            </small>
+                        </div>
+                        <h2 class="card-title h5">
+                            <a th:href="@{/posts/{slug}(slug=${post.slug})}"
+                               class="text-decoration-none text-dark stretched-link"
+                               th:text="${post.title}">Post Title</a>
+                        </h2>
+                        <p class="card-text text-muted" th:text="${post.summary}">Summary...</p>
+                        <div class="d-flex flex-wrap gap-1">
+                            <span th:each="tag : ${post.tags}" class="badge bg-secondary"
+                                  th:text="${tag.name}">tag</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- No cover image -->
+            <div class="card-body" th:unless="${post.coverImage != null && !post.coverImage.isBlank()}">
+                <div class="d-flex align-items-center mb-2">
+                    <span th:if="${post.category}" class="badge bg-primary me-2"
+                          th:text="${post.category.name}">Category</span>
+                    <span th:if="${post.isTop}" class="badge bg-danger me-2">Pinned</span>
+                    <small class="text-muted">
+                        <i class="bi bi-calendar3"></i>
+                        <span th:text="${#temporals.format(post.publishedAt != null ? post.publishedAt : post.createdAt, 'yyyy-MM-dd')}">2024-01-01</span>
+                    </small>
+                    <small class="text-muted ms-3">
+                        <i class="bi bi-eye"></i>
+                        <span th:text="${post.viewCount}">0</span> views
+                    </small>
+                </div>
+                <h2 class="card-title h5">
+                    <a th:href="@{/posts/{slug}(slug=${post.slug})}"
+                       class="text-decoration-none text-dark stretched-link"
+                       th:text="${post.title}">Post Title</a>
+                </h2>
+                <p class="card-text text-muted" th:text="${post.summary}">Summary...</p>
+                <div class="d-flex flex-wrap gap-1">
+                    <span th:each="tag : ${post.tags}" class="badge bg-secondary"
+                          th:text="${tag.name}">tag</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Pagination -->
+        <div th:replace="~{fragments/pagination :: pagination(${posts})}"></div>
+    </div>
+</body>
+</html>

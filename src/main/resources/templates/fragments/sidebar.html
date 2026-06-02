@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <aside th:fragment="sidebar">
+        <!-- Author Card -->
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+                         style="width: 80px; height: 80px; font-size: 2rem;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                </div>
+                <h5 class="card-title">About Me</h5>
+                <p class="card-text text-muted small">A passionate developer sharing thoughts on technology and programming.</p>
+                <a th:href="@{/about}" class="btn btn-outline-primary btn-sm">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="card mb-4" th:if="${categories != null && !categories.isEmpty()}">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-folder"></i> Categories</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a th:each="cat : ${categories}"
+                   th:href="@{/categories/{slug}(slug=${cat.slug})}"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span th:text="${cat.name}">Category</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Posts -->
+        <div class="card mb-4" th:if="${recentPosts != null && !recentPosts.isEmpty()}">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Posts</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a th:each="post : ${recentPosts}"
+                   th:href="@{/posts/{slug}(slug=${post.slug})}"
+                   class="list-group-item list-group-item-action">
+                    <div class="small fw-medium" th:text="${post.title}">Post Title</div>
+                    <small class="text-muted" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2024-01-01</small>
+                </a>
+            </div>
+        </div>
+    </aside>
+</body>
+</html>
