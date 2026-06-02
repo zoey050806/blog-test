@@ -31,7 +31,7 @@
                         <tr th:each="tag : ${tags}">
                             <td><span class="badge bg-info" th:text="${tag.name}">tag</span></td>
                             <td><code th:text="${tag.slug}">slug</code></td>
-                            <td><span class="badge bg-secondary" th:text="${tag.posts.size()}">0</span></td>
+                            <td><span class="badge bg-secondary">—</span></td>
                             <td><small th:text="${#temporals.format(tag.createdAt, 'yyyy-MM-dd')}">2024</small></td>
                             <td>
                                 <div class="d-flex gap-1">
