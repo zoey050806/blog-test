@@ -9,15 +9,14 @@
     <div layout:fragment="content">
         <h1 class="mb-4" th:text="${isEdit} ? 'Edit Post' : 'New Post'">Post Form</h1>
 
-        <!-- Validation Errors -->
-        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-            <ul class="mb-0">
-                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Error</li>
-            </ul>
-        </div>
-
         <form th:action="${isEdit} ? @{/admin/posts/{id}(id=${post.id})} : @{/admin/posts}"
-              method="post" enctype="multipart/form-data" id="postForm">
+              method="post" enctype="multipart/form-data" id="postForm" th:object="${postForm}">
+            <!-- Validation Errors -->
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                <ul class="mb-0">
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Error</li>
+                </ul>
+            </div>
             <div class="row">
                 <!-- Main Content Column -->
                 <div class="col-lg-8">
@@ -27,7 +26,7 @@
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title *</label>
                                 <input type="text" class="form-control" id="title" name="title"
-                                       th:field="*{postForm.title}" required maxlength="200"
+                                       th:field="*{title}" required maxlength="200"
                                        placeholder="Enter post title">
                             </div>
 
@@ -35,7 +34,7 @@
                             <div class="mb-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input type="text" class="form-control" id="slug" name="slug"
-                                       th:field="*{postForm.slug}" maxlength="200"
+                                       th:field="*{slug}" maxlength="200"
                                        placeholder="Auto-generated from title">
                                 <small class="text-muted">Leave blank to auto-generate from title</small>
                             </div>
@@ -44,7 +43,7 @@
                             <div class="mb-3">
                                 <label for="summary" class="form-label">Summary</label>
                                 <textarea class="form-control" id="summary" name="summary"
-                                          th:field="*{postForm.summary}" rows="2" maxlength="500"
+                                          th:field="*{summary}" rows="2" maxlength="500"
                                           placeholder="Brief summary (shown in post cards)"></textarea>
                             </div>
 
@@ -57,7 +56,7 @@
                                          class="img-thumbnail" style="max-height: 150px;" alt="Cover preview">
                                 </div>
                                 <input type="file" class="form-control" id="coverFile" accept="image/*">
-                                <input type="hidden" name="coverImage" th:field="*{postForm.coverImage}">
+                                <input type="hidden" name="coverImage" th:field="*{coverImage}">
                                 <div id="uploadProgress" class="mt-1 d-none">
                                     <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%">Uploading...</div></div>
                                 </div>
@@ -67,7 +66,7 @@
                             <div class="mb-3">
                                 <label for="content" class="form-label">Content (Markdown) *</label>
                                 <textarea class="form-control" id="content" name="content"
-                                          th:field="*{postForm.content}" rows="20"
+                                          th:field="*{content}" rows="20"
                                           placeholder="Write your post in Markdown..."></textarea>
                             </div>
                         </div>
@@ -83,7 +82,7 @@
                             <!-- Status -->
                             <div class="mb-3">
                                 <label class="form-label">Status</label>
-                                <select class="form-select" name="status" th:field="*{postForm.status}">
+                                <select class="form-select" name="status" th:field="*{status}">
                                     <option value="DRAFT">Draft</option>
                                     <option value="PUBLISHED">Published</option>
                                 </select>
@@ -92,7 +91,7 @@
                             <!-- Pin to Top -->
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="isTop" name="isTop"
-                                       value="true" th:field="*{postForm.isTop}">
+                                       value="true" th:field="*{isTop}">
                                 <label class="form-check-label" for="isTop">Pin to top</label>
                             </div>
                         </div>
@@ -102,7 +101,7 @@
                     <div class="card mb-3">
                         <div class="card-header bg-white"><h6 class="mb-0">Category</h6></div>
                         <div class="card-body">
-                            <select class="form-select" name="categoryId" th:field="*{postForm.categoryId}">
+                            <select class="form-select" name="categoryId" th:field="*{categoryId}">
                                 <option value="">— No Category —</option>
                                 <option th:each="cat : ${categories}" th:value="${cat.id}"
                                         th:text="${cat.name}">Category</option>
